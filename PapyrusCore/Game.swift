@@ -19,6 +19,7 @@ public enum GameEvent {
     case swappedTiles(Game)
     case turnBegan(Game)
     case turnEnded(Game)
+    case gameStarted(Game)
 }
 
 public typealias EventHandler = (GameEvent) -> ()
@@ -144,6 +145,7 @@ public class Game {
     /// Start gameplay.
     public func start() {
         ended = false
+        eventHandler(.gameStarted(self))
         turn()
     }
     
