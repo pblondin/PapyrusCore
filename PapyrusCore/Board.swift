@@ -67,7 +67,7 @@ extension BoardType {
     }
     
     public var debugDescription: String {
-        return (0..<layout.rows).flatMap { row in
+        return (0..<layout.rows).compactMap { row in
             (0..<layout.columns).map { column in
                 let letter = layout[column, row]
                 return letter == empty ? "_" : String(letter)

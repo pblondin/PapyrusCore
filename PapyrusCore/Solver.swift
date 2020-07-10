@@ -248,7 +248,7 @@ extension SolverType {
             let _x = horizontal ? offset : position.x
             let _y = horizontal ? position.y : offset
             var fixedLetter: Character?
-            if let index = remaining.index(where: { $0.x == _x && $0.y == _y}) {
+            if let index = remaining.firstIndex(where: { $0.x == _x && $0.y == _y}) {
                 fixedLetter = remaining[index].letter
                 remaining.remove(at: index)
             }

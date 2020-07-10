@@ -119,7 +119,7 @@ public class Game {
     public func save(to file: URL) -> Bool {
         let lastMoveJson: JSONValueType = _lastMove?.toJSON() ?? NSNull()
         let values: [JSONKey: JSONValueType] = [.lastMove: lastMoveJson,
-                                                .config: configJSON,
+                                                .config: configJSON!,
                                                 .bag: String(bag.remaining),
                                                 .players: players.map({ $0.toJSON() }),
                                                 .playerIndex: playerIndex,

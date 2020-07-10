@@ -23,13 +23,6 @@ public protocol PositionType: Hashable {
     var x: Int { get }
     var y: Int { get }
     init(x: Int, y: Int)
-    var hashValue: Int { get }
-}
-
-extension PositionType {
-    public var hashValue: Int {
-        return "\(x),\(y)".hash
-    }
 }
 
 internal enum Direction {
