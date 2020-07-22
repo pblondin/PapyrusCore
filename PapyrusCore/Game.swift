@@ -109,7 +109,7 @@ public class Game {
         }
         _lastMove = Solution.object(from: lastMoveJson)
     }
-    
+        
     /// Returns: Index of given player in players array.
     public func index(of player: Player) -> Int? {
         return players.enumerated().filter({ $1.id == player.id }).first?.offset

@@ -19,7 +19,7 @@ private func makePositions(indices: CountableRange<Int>) -> Positions {
 internal struct Edge: OptionSet {
     let rawValue: Int
     
-    static let None = Edge(rawValue: 0)
+    static let None: Edge = []
     static let Left = Edge(rawValue: 1 << 0)
     static let Right = Edge(rawValue: 1 << 1)
     static let Top = Edge(rawValue: 1 << 2)
