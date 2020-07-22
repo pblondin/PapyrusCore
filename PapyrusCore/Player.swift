@@ -116,7 +116,7 @@ func makePlayers(using JSONSerializables: [JSON]) -> [Player] {
 private func json<T: Player>(forPlayer player: T) -> JSON {
     let rackJson: [JSON] = player.rack.map({ json(from: [.letter: String($0.letter), .blank: $0.isBlank]) })
     let solvesJson = player.solves.map({ $0.toJSON() })
-    return json(from: [.score: player.score, .rack: rackJson, .solves: solvesJson])
+    return json(from: [.score: player.score, .rack: rackJson, .solves: solvesJson, .playerName: player.name])
 }
 
 private func parameters(from json: JSON) -> (name: String, rack: [Character], solves: [Solution], score: Int)? {
