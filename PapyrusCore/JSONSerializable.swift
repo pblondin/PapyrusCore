@@ -45,6 +45,7 @@ internal enum JSONKey: String {
     case difficulty
     case bag
     case players
+    case playerName
     case playerIndex
     case config
     case serial

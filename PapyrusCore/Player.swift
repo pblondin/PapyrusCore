@@ -32,6 +32,8 @@ public struct RackTile: Equatable {
 public protocol Player: JSONSerializable {
     /// Unique identifier for player.
     var id: String { get }
+    /// Player name.
+    var name: String { get }
     /// Current tiles in rack.
     var rack: [RackTile] { get set }
     /// Current score.
@@ -117,8 +119,9 @@ private func json<T: Player>(forPlayer player: T) -> JSON {
     return json(from: [.score: player.score, .rack: rackJson, .solves: solvesJson])
 }
 
-private func parameters(from json: JSON) -> (rack: [Character], solves: [Solution], score: Int)? {
+private func parameters(from json: JSON) -> (name: String, rack: [Character], solves: [Solution], score: Int)? {
     guard
+        let name: String = JSONKey.playerName.in(json),
         let rackJson: [JSON] = JSONKey.rack.in(json),
         let solvesJson: [JSON] = JSONKey.solves.in(json),
         let score: Int = JSONKey.score.in(json) else {
@@ -131,22 +134,25 @@ private func parameters(from json: JSON) -> (rack: [Character], solves: [Solutio
     }
     let solves = solvesJson.compactMap({ Solution.object(from: $0) })
     let rack = rackJson.map(letter)
-    return (rack, solves, score)
+    return (name, rack, solves, score)
 }
 
 public struct Human: Player {
     public let id = UUID().uuidString
+    public let name: String
     public var rack: [RackTile] = []
     public var score: Int
     public var solves: [Solution]
     public var consecutiveSkips: Int
-    public init(rack: [Character] = [], score: Int = 0, solves: [Solution] = [], consecutiveSkips: Int = 0) {
+    public init(name: String = Computer.randomComputerName(), rack: [Character] = [], score: Int = 0, solves: [Solution] = [], consecutiveSkips: Int = 0) {
+        self.name = name
         self.score = score
         self.solves = solves
         self.consecutiveSkips = consecutiveSkips
         self.drew(tiles: rack)
     }
     public init(rackTiles: [RackTile]) {
+        self.name = ""
         self.score = 0
         self.solves = []
         self.consecutiveSkips = 0
@@ -158,21 +164,23 @@ public struct Human: Player {
     }
     
     public static func object(from json: JSON) -> Human? {
-        guard let (rack, solves, score) = parameters(from: json) else {
+        guard let (name, rack, solves, score) = parameters(from: json) else {
             return nil
         }
-        return Human(rack: rack, score: score, solves: solves, consecutiveSkips: 0)
+        return Human(name: name, rack: rack, score: score, solves: solves, consecutiveSkips: 0)
     }
 }
 
 public struct Computer: Player {
     public let id = UUID().uuidString
+    public let name: String
     public let difficulty: Difficulty
     public var rack: [RackTile] = []
     public var score: Int
     public var solves: [Solution]
     public var consecutiveSkips: Int
-    public init(difficulty: Difficulty = .hard, rack: [Character] = [], score: Int = 0, solves: [Solution] = [], consecutiveSkips: Int = 0) {
+    public init(name: String = Computer.randomComputerName(), difficulty: Difficulty = .hard, rack: [Character] = [], score: Int = 0, solves: [Solution] = [], consecutiveSkips: Int = 0) {
+        self.name = name
         self.difficulty = difficulty
         self.score = score
         self.solves = solves
@@ -186,13 +194,18 @@ public struct Computer: Player {
         return buffer
     }
     
+    public static func randomComputerName() -> String {
+        let firstNameList = ["Henry", "William", "Geoffrey", "Jim", "Yvonne", "Jamie", "Leticia", "Priscilla", "Sidney", "Nancy", "Edmund", "Bill", "Megan"]
+        return firstNameList.randomElement()!
+    }
+    
     public static func object(from json: JSON) -> Computer? {
         guard
             let diff: Double = JSONKey.difficulty.in(json),
             let difficulty = Difficulty(rawValue: diff),
-            let (rack, solves, score) = parameters(from: json) else {
-            return nil
+            let (name, rack, solves, score) = parameters(from: json) else {
+                return nil
         }
-        return Computer(difficulty: difficulty, rack: rack, score: score, solves: solves, consecutiveSkips: 0)
+        return Computer(name: name, difficulty: difficulty, rack: rack, score: score, solves: solves, consecutiveSkips: 0)
     }
 }
